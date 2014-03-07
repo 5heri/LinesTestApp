@@ -22,7 +22,7 @@ public class MainActivity extends Activity {
 	}
 	
 	public void button1Pressed(View view) {
-		Intent intent = new Intent(this, LocationManager.class);
+		Intent intent = new Intent(this, LocationManagement.class);
 		startActivity(intent);
 	}
 

@@ -7,6 +7,8 @@
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="18" />
+    
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -23,8 +25,8 @@
             </intent-filter>
         </activity>
         <activity 
-            android:name="com.example.linetestapp.LocationManager"
-            android:label="@string/app_locationManager" 
+            android:name="com.example.linetestapp.LocationManagement"
+            android:label="@string/app_locationManagement" 
             android:parentActivityName="com.example.linetestapp.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
