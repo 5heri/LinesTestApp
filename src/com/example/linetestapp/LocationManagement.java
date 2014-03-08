@@ -65,6 +65,13 @@ public class LocationManagement extends FragmentActivity implements
 	
 	Bitmap b;
 	
+	/*
+	private static final String PROVIDER = "flp";
+    private static final double LAT = 37.377166;
+    private static final double LNG = -122.086966;
+    private static final float ACCURACY = 3.0f;
+    */
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -93,6 +100,15 @@ public class LocationManagement extends FragmentActivity implements
 		setContentView(drawer);
 	}
 
+	/*public Location createLocation(double lat, double lng, float accuracy) {
+        // Create a new Location
+        Location newLocation = new Location(PROVIDER);
+        newLocation.setLatitude(lat);
+        newLocation.setLongitude(lng);
+        newLocation.setAccuracy(accuracy);
+        return newLocation;
+    }*/
+	
 	@Override
 	protected void onPause() {
 		mEditor.putBoolean(KEY_UPDATES_REQUESTED, mUpdatesRequested);
@@ -118,6 +134,13 @@ public class LocationManagement extends FragmentActivity implements
 		super.onStart();
 		// Connecting client
 		mLocationClient.connect();
+		
+		// When the location client is connected, set mock mode
+		/*if (mLocationClient.isConnected()) {			
+			mLocationClient.setMockMode(true);
+			Location testLocation = createLocation(LAT, LNG, ACCURACY);
+			mLocationClient.setMockLocation(testLocation);
+		}	*/
 	}
 
 	@Override
@@ -147,7 +170,9 @@ public class LocationManagement extends FragmentActivity implements
         
         drawer.setPrevCurX((float)x);
         drawer.setPrevCurY((float)y);
-        drawer.onDraw(canvas);	
+        drawer.setDrawTrue();
+        drawer.onDraw(canvas);
+        drawer.setDrawFalse();;	
 	}
 
 	@Override

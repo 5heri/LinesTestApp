@@ -1,5 +1,7 @@
 package com.example.linetestapp;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import android.content.Context;
@@ -14,6 +16,10 @@ public class DrawLines extends View {
 	
 	private final static String LOG_OUT = "LOG";
 	private final static float SCALE = 100000;     // TEST SCALE
+	private final static float POS_MOVING_SCALE = 1.0f;
+	private final static float NEG_MOVING_SCALE = -1.0f;
+	
+	private List<PointPair>  path;
 	
 	private float x_p_prev;
 	private float y_p_prev;
@@ -23,10 +29,16 @@ public class DrawLines extends View {
 	private float x_draw_first;
 	private float y_draw_first;
 	
+	private boolean drawNow;
+	
 	private Context context;
 
 	public DrawLines(Context context) {
 		super(context);
+		
+		path  = new ArrayList<PointPair>();
+		path.add(new PointPair(240, 400));      // Remove hard coded values
+		
 		x_p_prev = 0;
 		y_p_prev = 0;
 		x_p_curr = 0;
@@ -34,6 +46,9 @@ public class DrawLines extends View {
 		
 		x_draw_first = 0;
 		y_draw_first = 0;
+		
+		drawNow = false;
+		
 		this.context = context;
 	}
 	
@@ -41,75 +56,79 @@ public class DrawLines extends View {
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		
-		/*if (x_p_prev != 0 || y_p_prev != 0) {
-		Log.d(LOG_OUT, "prevY: " + y_p_prev + "   prevX: " + x_p_prev);
-		Log.d(LOG_OUT, "currY: " + y_p_curr + "   currX: " + x_p_curr);
-		
-		Rect rectangle = new Rect();
-		rectangle.set(0, 0, canvas.getWidth(), canvas.getHeight()/2);
-		
-		Paint red = new Paint();
-		red.setColor(Color.RED);
-		red.setStyle(Paint.Style.FILL);
-		
-		Paint blue = new Paint();
-		blue.setColor(Color.BLUE);
-		blue.setStyle(Paint.Style.FILL);
 		
 		
-		
-		
-		
-		
-		float diff_x = calculateDiffX(x_p_prev*SCALE, x_p_curr*SCALE);
-		float diff_y = calculateDiffY(y_p_prev*SCALE, y_p_curr*SCALE);
-		
-		Log.d(LOG_OUT, "diffX: " + diff_x);
-		Log.d(LOG_OUT, "diffY: " + diff_y);
-		
-		float x_to_next = x_draw_first+diff_x;
-		float y_to_next = y_draw_first+diff_y;
-		
-		Log.d(LOG_OUT, "FROM: "+x_draw_first+" "+y_draw_first+"      "+"TO: "+x_to_next+" "+y_to_next);
-		
-		canvas.drawLine(x_draw_first, y_draw_first, 
-				x_to_next, y_to_next, blue);
-		
-		x_draw_first = x_to_next;
-		y_draw_first = y_to_next;
-		
-		
-		
-		
-		
-		
+		if (x_p_prev != 0 || y_p_prev != 0) {
+			Log.d(LOG_OUT, "prevY: " + y_p_prev + "   prevX: " + x_p_prev);
+			Log.d(LOG_OUT, "currY: " + y_p_curr + "   currX: " + x_p_curr);
+
+			Paint red = new Paint();
+			red.setColor(Color.RED);
+			red.setStyle(Paint.Style.FILL);
+
+			Paint blue = new Paint();
+			blue.setColor(Color.BLUE);
+			blue.setStyle(Paint.Style.FILL);
+
+			float diff_x = calculateDiffX(x_p_prev*SCALE, x_p_curr*SCALE);
+			float diff_y = calculateDiffY(y_p_prev*SCALE, y_p_curr*SCALE);
+
+			Log.d(LOG_OUT, "diffX: " + diff_x);
+			Log.d(LOG_OUT, "diffY: " + diff_y);
+
+			if (diff_x > POS_MOVING_SCALE || diff_x < NEG_MOVING_SCALE 
+					|| diff_y > POS_MOVING_SCALE || diff_y < NEG_MOVING_SCALE) {
+				float x_to_next = x_draw_first+diff_x;
+				float y_to_next = y_draw_first+diff_y;
+
+				Log.d(LOG_OUT, "FROM: "+x_draw_first+" "+y_draw_first
+						+"      "+"TO: "+x_to_next+" "+y_to_next);
+
+				/*canvas.drawLine(x_draw_first, y_draw_first, 
+				x_to_next, y_to_next, blue);*/
+				PointPair point = new PointPair(x_to_next, y_to_next);
+				path.add(point);
+
+
+				x_draw_first = x_to_next;
+				y_draw_first = y_to_next;
+			}
+			int size = path.size();
+			Log.d(LOG_OUT, "SIZE: " + size);
+			for (int i = 0; i < size; i++) {
+				canvas.drawCircle(path.get(i).getX(), path.get(i).getY(), canvas.getHeight()/250, blue);
+			}
 		} else {
 			Log.d(LOG_OUT, "prevY: " + y_p_prev + "   prevX: " + x_p_prev);
 			Log.d(LOG_OUT, "currY: " + y_p_curr + "   currX: " + x_p_curr);
 			Toast.makeText(context, "lat or lng is zero", Toast.LENGTH_SHORT).show();
-			x_draw_first = 240;
-			y_draw_first = 400;
-		}*/
+			x_draw_first = canvas.getWidth()/2;
+			y_draw_first = canvas.getHeight()/2;
+		}
 		
-		Paint blue = new Paint();
+		
+		/*Paint blue = new Paint();
 		blue.setColor(Color.BLUE);
 		blue.setStyle(Paint.Style.FILL);
 		
 		Random rand = new Random();
 		int randomX = rand.nextInt(480);
 		int randomY = rand.nextInt(800);
-		int divider = rand.nextInt(6)+1;
-		canvas.save();
-		canvas.drawCircle(randomX, randomY, canvas.getHeight()/divider, blue);
-		canvas.restore();
-		Toast.makeText(context, "Circle created", Toast.LENGTH_SHORT).show();
+		PointPair point = new PointPair(randomX, randomY);
+		//canvas.save();
+		path.add(point);
+		int size = path.size();
+		for (int i = 0; i < size; i++) {
+			canvas.drawCircle(path.get(i).getX(), path.get(i).getY(), canvas.getHeight()/50, blue);			
+		}*/
+		//canvas.restore();
+		//Toast.makeText(context, "Circle created", Toast.LENGTH_SHORT).show();
 		//invalidate();
-		Log.d(LOG_OUT, "X: "+randomX + "  Y: "+randomY);
-		
+		//Log.d(LOG_OUT, "X: "+randomX + "  Y: "+randomY);
+		if (drawNow) {
+			invalidate();			
+		}
 	}
-	
-	
-	
 	
 	private float calculateDiffX(float prev_x, float curr_x) {
 		float diff = curr_x - prev_x;
@@ -134,6 +153,14 @@ public class DrawLines extends View {
 	public void setPrevCurY(float y) {
 		y_p_prev = y_p_curr;
 		y_p_curr = y;
+	}
+	
+	public void setDrawTrue() {
+		drawNow = true;
+	}
+	
+	public void setDrawFalse() {
+		drawNow = false;
 	}
 	
 }
