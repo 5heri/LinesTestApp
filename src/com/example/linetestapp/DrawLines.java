@@ -12,6 +12,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+/*
+ * 
+ * Implemented using a list to keep track of all previous positions.
+ * TODO: Look into using SurfaceView 
+ * TODO: TEST scaling values
+ * 
+ */
+
 public class DrawLines extends View {
 	
 	private final static String LOG_OUT = "LOG";
@@ -142,12 +150,8 @@ public class DrawLines extends View {
 	}
 	
 	public void setPrevCurX(float x) {
-		if (x_p_prev == 0) {
-			
-		}
 		x_p_prev = x_p_curr;
 		x_p_curr = x;
-		//x_p_curr = x + 10;  // for testing
 	}
 	
 	public void setPrevCurY(float y) {
@@ -155,10 +159,12 @@ public class DrawLines extends View {
 		y_p_curr = y;
 	}
 	
+	// Used to lock invalidate().
 	public void setDrawTrue() {
 		drawNow = true;
 	}
 	
+	// Used to lock invalidate().
 	public void setDrawFalse() {
 		drawNow = false;
 	}
