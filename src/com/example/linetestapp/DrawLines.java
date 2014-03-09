@@ -86,25 +86,26 @@ public class DrawLines extends View {
 
 			if (diff_x > POS_MOVING_SCALE || diff_x < NEG_MOVING_SCALE 
 					|| diff_y > POS_MOVING_SCALE || diff_y < NEG_MOVING_SCALE) {
-				float x_to_next = x_draw_first+diff_x;
-				float y_to_next = y_draw_first+diff_y;
+				
+				Log.d(LOG_OUT, "FROM: "+x_draw_first+" "+y_draw_first);
+				
+				x_draw_first += diff_x;
+				y_draw_first += diff_y;
+				
+				Log.d(LOG_OUT, "TO: "+x_draw_first+" "+y_draw_first);
 
-				Log.d(LOG_OUT, "FROM: "+x_draw_first+" "+y_draw_first
-						+"      "+"TO: "+x_to_next+" "+y_to_next);
-
-				/*canvas.drawLine(x_draw_first, y_draw_first, 
-				x_to_next, y_to_next, blue);*/
-				PointPair point = new PointPair(x_to_next, y_to_next);
+				PointPair point = new PointPair(x_draw_first, y_draw_first);
 				path.add(point);
-
-
-				x_draw_first = x_to_next;
-				y_draw_first = y_to_next;
 			}
+			canvas.drawCircle(canvas.getWidth()/2, canvas.getHeight()/2, canvas.getHeight()/250, blue);
 			int size = path.size();
 			Log.d(LOG_OUT, "SIZE: " + size);
-			for (int i = 0; i < size; i++) {
-				canvas.drawCircle(path.get(i).getX(), path.get(i).getY(), canvas.getHeight()/250, blue);
+			if (size > 1) {
+				for (int i = 1; i < size; i++) {
+					canvas.drawLine(path.get(i-1).getX(), path.get(i-1).getY(), 
+							path.get(i).getX(), path.get(i).getY(), blue);
+				//canvas.drawCircle(path.get(i).getX(), path.get(i).getY(), canvas.getHeight()/250, blue);
+				}				
 			}
 		} else {
 			Log.d(LOG_OUT, "prevY: " + y_p_prev + "   prevX: " + x_p_prev);
